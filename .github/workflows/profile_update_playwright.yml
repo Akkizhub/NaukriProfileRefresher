@@ -13,31 +13,12 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Upload session if present
-        run: |
-          if [ -f naukri_profile.zip ]; then
-            echo "Session zip found. Uploading..."
-            gh release create temp-session naukri_profile.zip --repo ${{ github.repository }}
-          else
-            echo "No session zip found. Skipping upload."
-          fi
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Download session (if exists)
+      - name: Download Naukri session profile (if exists)
         uses: actions/download-artifact@v4
         with:
           name: naukri_profile
           path: naukri_profile
-        continue-on-error: true
-
-      - name: Unzip session
-        run: |
-          if [ -f naukri_profile/naukri_profile.zip ]; then
-            unzip naukri_profile/naukri_profile.zip -d naukri_profile
-          else
-            echo "No session zip to unzip."
-          fi
+        continue-on-error: true # If no profile exists yet, skip
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -50,14 +31,12 @@ jobs:
           playwright install
 
       - name: Run Naukri updater
-        run: python naukri_playwright.py
+        run: |
+          python naukri_playwright.py
 
-      - name: Re-zip updated session
-        run: zip -r naukri_profile.zip naukri_profile/
-
-      - name: Upload updated session
+      - name: Upload updated Naukri session profile
         uses: actions/upload-artifact@v4
         with:
           name: naukri_profile
-          path: naukri_profile.zip
-          retention-days: 30
+          path: naukri_profile
+          retention-days: 30 # Keep for 30 days
