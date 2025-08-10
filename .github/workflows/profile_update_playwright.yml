@@ -13,12 +13,15 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Download Naukri session profile (if exists)
-        uses: actions/download-artifact@v4
-        with:
-          name: naukri_profile
-          path: naukri_profile
-        continue-on-error: true # If no profile exists yet, skip
+      - name: Unzip Naukri profile
+        run: |
+          if [ -f naukri_profile.zip ]; then
+            echo "Unzipping profile..."
+            unzip naukri_profile.zip -d naukri_profile
+          else
+            echo "❌ naukri_profile.zip not found!"
+            exit 1
+          fi
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -31,12 +34,7 @@ jobs:
           playwright install
 
       - name: Run Naukri updater
-        run: |
-          python naukri_playwright.py
+        run: python naukri_playwright.py
 
-      - name: Upload updated Naukri session profile
-        uses: actions/upload-artifact@v4
-        with:
-          name: naukri_profile
-          path: naukri_profile
-          retention-days: 30 # Keep for 30 days
+      - name: Re-zip updated profile
+        run: zip -r naukri_profile.zip naukri_profile/
