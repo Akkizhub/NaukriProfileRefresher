@@ -1,0 +1,19 @@
+name: Upload Naukri Profile Artifact
+
+on:
+  workflow_dispatch:  # Run manually from GitHub Actions tab
+
+jobs:
+  upload-profile:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Upload Naukri session profile
+        uses: actions/upload-artifact@v3
+        with:
+          name: naukri_profile
+          path: naukri_profile.zip
+          retention-days: 30
