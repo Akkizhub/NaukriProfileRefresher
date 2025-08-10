@@ -42,12 +42,6 @@ python naukri.py
 | last 10 versions
 
 
-## Contribute
-
-Contributions are always welcome!
-
-Please read the [contribution guidelines](contributing.md) first.
-
 ## Disclaimer
 
 This script is not affiliated with or endorsed by Naukri.com.
