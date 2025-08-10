@@ -13,12 +13,24 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Download Naukri session profile (if exists)
+      - name: Upload session if present
+        if: ${{ exists('naukri_profile.zip') }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: naukri_profile
+          path: naukri_profile.zip
+          retention-days: 30
+
+      - name: Download session (if exists)
         uses: actions/download-artifact@v4
         with:
           name: naukri_profile
           path: naukri_profile
-        continue-on-error: true # If no profile exists yet, skip
+        continue-on-error: true
+
+      - name: Unzip session
+        if: ${{ success() }}
+        run: unzip naukri_profile/naukri_profile.zip -d naukri_profile
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -31,12 +43,14 @@ jobs:
           playwright install
 
       - name: Run Naukri updater
-        run: |
-          python naukri_playwright.py
+        run: python naukri_playwright.py
 
-      - name: Upload updated Naukri session profile
+      - name: Re-zip updated session
+        run: zip -r naukri_profile.zip naukri_profile/
+
+      - name: Upload updated session
         uses: actions/upload-artifact@v4
         with:
           name: naukri_profile
-          path: naukri_profile
-          retention-days: 30 # Keep for 30 days
+          path: naukri_profile.zip
+          retention-days: 30
