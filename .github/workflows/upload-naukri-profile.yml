@@ -15,7 +15,7 @@ jobs:
           unzip naukri_profile.zip -d naukri_profile
 
       - name: Upload as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: naukri_profile
           path: naukri_profile
