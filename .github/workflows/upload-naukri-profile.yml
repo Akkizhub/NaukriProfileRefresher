@@ -1,0 +1,21 @@
+name: Upload Naukri Profile
+
+on:
+  workflow_dispatch:
+
+jobs:
+  upload-profile:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Unzip Naukri profile
+        run: |
+          unzip naukri_profile.zip -d naukri_profile
+
+      - name: Upload as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: naukri_profile
+          path: naukri_profile
