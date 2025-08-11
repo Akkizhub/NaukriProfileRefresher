@@ -1,8 +1,6 @@
 name: Naukri Profile Update (Playwright)
 
 on:
-  schedule:
-    - cron: "30 0-6 * * *" # Every hour from 6 AM to 12 PM IST
   workflow_dispatch:
 
 jobs:
